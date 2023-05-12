@@ -24,7 +24,7 @@ variable "application_name" {
   default = "tl-sap-shipments"
 }
 
-resource "azurerm_resource_group" "example" {
+resource "azurerm_resource_group" "ksl_sap_shipments" {
   name     = "${var.application_name}-rg"
   location = "northeurope"
 
@@ -34,10 +34,10 @@ resource "azurerm_resource_group" "example" {
   }
 }
 
-resource "azurerm_postgresql_server" "example" {
+resource "azurerm_postgresql_server" "ksl_sap_shipments" {
   name                = "${var.application_name}-pg"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.ksl_sap_shipments.location
+  resource_group_name = azurerm_resource_group.ksl_sap_shipments.name
   version             = "11"
   administrator_login = var.administrator_login
   administrator_login_password = var.administrator_password
@@ -52,4 +52,13 @@ resource "azurerm_postgresql_server" "example" {
     Owner   = "John Doe"
     DueDate = "2023-04-30"
   }
+}
+
+# PSQL database 
+resource "azurerm_postgresql_database" "ksl_sap_shipments" {
+  name                = "${var.application_name}-db"
+  resource_group_name = azurerm_resource_group.ksl_sap_shipments.name
+  server_name         = azurerm_postgresql_server.ksl_sap_shipments.name
+  charset             = "UTF8"
+  collation           = "English_United States.1252"
 }
